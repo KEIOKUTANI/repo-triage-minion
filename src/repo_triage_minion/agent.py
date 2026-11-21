@@ -58,10 +58,10 @@ class RepoTriageRunner:
     def _build_prompt(self, repo_path: str, structured: bool) -> str:
         target = str(Path(repo_path).expanduser().resolve())
         base = (
-            f"Inspect the local repository at `{target}` using your tools "
-            "(scan_repository_structure, find_code_markers, check_release_hygiene). "
-            "Summarize the most urgent QA, bug, security, and release-readiness findings "
-            "and list prioritized next actions."
+            f"Call `run_full_repo_audit` once on `{target}`. "
+            "Then immediately produce a concise QA & release-readiness summary listing "
+            "the concrete bugs, hardcoded-secret warnings, missing release hygiene items, "
+            "and prioritized next actions. Do not call additional tools unless needed."
         )
         if structured:
             base += (
@@ -82,11 +82,7 @@ class RepoTriageRunner:
         """Execute a repository triage turn with explicit SDK error handling."""
 
         target = str(Path(repo_path).expanduser().resolve())
-        forced = (
-            ["scan_repository_structure", "find_code_markers", "check_release_hygiene"]
-            if force_initial_tools
-            else []
-        )
+        forced = ["run_full_repo_audit"] if force_initial_tools else []
         prompt = self._build_prompt(target, structured=structured)
         event_count = 0
 

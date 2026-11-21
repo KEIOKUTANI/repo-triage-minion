@@ -10,6 +10,18 @@
     "trusted_channels": ["console"]
   },
   "enabled_channels": ["console"],
+  "runtime": {
+    "agent_loop_max_steps": 6
+  },
+  "providers": {
+    "ollama": {
+      "base_url": "http://127.0.0.1:11434",
+      "model": "qwen2.5:3b",
+      "temperature": 0.2,
+      "timeout_seconds": 120,
+      "tool_call_strategy": "native"
+    }
+  },
   "agents": {
     "triage-echo": {
       "name": "triage-echo",
@@ -39,7 +51,7 @@
       "name": "triage-ollama",
       "default_channel": "console",
       "provider": "ollama",
-      "model": "llama3.1"
+      "model": "qwen2.5:3b"
     }
   }
 }

@@ -9,7 +9,23 @@
     --config agents.example.json --agent triage-echo
   ```
 
-> **Scope of this note:** the results below were verified with the offline `echo` provider. The echo provider exercises configuration, storage, sessions, streaming plumbing, and error paths, but it does not call a model. Model-backed results are recorded separately in the demo video section of the submission.
+> **Scope of this note:** verified both offline (`echo` provider) and with a **real local model** (**Ollama `qwen2.5:3b`** on Apple M4 Metal, ~40 tokens/sec) using `openminion==0.1.23`.
+
+---
+
+## Real Model-Backed Run Summary (Ollama `qwen2.5:3b`)
+
+- **Command**:
+  ```bash
+  OPENMINION_HOME=/tmp/om_ollama4 OPENMINION_DATA_ROOT=/tmp/om_ollama4/.openminion \
+  PYTHONPATH=src python -m repo_triage_minion.cli triage sample_target_repo \
+    --config agents.example.json --agent triage-ollama --model-choice --stream \
+    --followup "Which single issue should we fix first before release?"
+  ```
+- **Observed Result**:
+  - `openminion 0.1.23`, `session=repo-triage-session`, **`stream_events=32`**.
+  - The model invoked `run_full_repo_audit` via native tool calling (`tool_call_strategy: "native"`), accurately surfaced all 3 code markers (`app.py` lines 3, 10, 15), the redacted hardcoded-secret warning (`app.py` line 4), and missing release hygiene (`LICENSE`, packaging, tests), then produced a prioritized action plan.
+  - On the follow-up turn in the same session, OpenMinion triggered its safe fallback (`answer-only budget finalization did not produce final text, so preserved tool evidence is returned`), preserving tool evidence instead of failing silently.
 
 ---
 
@@ -45,3 +61,9 @@
 - **Expected**: Exiting the `Agent` context manager closes the SQLite connections it opened.
 - **Actual**: 4 `ResourceWarning: unclosed database in <sqlite3.Connection ...>` warnings during the integration test.
 - **Impact**: Harmless for short CLI runs; may accumulate file descriptors in long-running processes or large test suites.
+
+### Finding 3: Local small-model tool loops under Ollama default `tool_call_strategy: "fallback"`
+- **Reproduction**: Run a multi-tool triage prompt against local Ollama (`qwen2.5:3b`, 4096-token context) using the default `tool_call_strategy: "fallback"`.
+- **Actual**: The turn repeatedly re-invoked tools until hitting `TurnTimeoutError: Turn execution timed out after 90.00 seconds` (which our runner caught cleanly).
+- **Mitigation & What Worked**: Switching `providers.ollama.tool_call_strategy` to `"native"` and consolidating read-only checks into a single `run_full_repo_audit` tool reduced context pressure and produced a complete, accurate triage summary with 32 stream events.
+- **Additional Observation**: Setting `runtime.agent_loop_max_steps: 6` still emitted `budget.allocated` with `soft_cap: 24, effective_max_iterations: 24, source: "adaptive_budget"` in stream events, suggesting `adaptive_budget` can override a lower explicit step cap.

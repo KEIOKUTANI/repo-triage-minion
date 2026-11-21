@@ -13,13 +13,13 @@
      ```
    - Highlight: `openminion 0.1.23`, deterministic tool snapshot, session continuity & isolation, 9 streaming events, and `AgentOutputValidationError` handling.
 3. **1:15–2:30 — Real Model-Backed Run (Required by Hackathon Objective)**
-   - Export `OPENAI_API_KEY` (or `GEMINI_API_KEY` / `CORTENSOR_API_KEY` / local Ollama) and run:
+   - Run against local Ollama (`ollama pull qwen2.5:3b`, free, no API key required) — or any cloud provider (`OPENAI_API_KEY` / `GEMINI_API_KEY` / `CORTENSOR_API_KEY`):
      ```bash
      PYTHONPATH=src python -m repo_triage_minion.cli triage sample_target_repo \
-       --config agents.example.json --agent triage-openai --stream \
+       --config agents.example.json --agent triage-ollama --model-choice --stream \
        --followup "Which single issue should we fix first before release?"
      ```
-   - Show the live tool-backed triage output + follow-up answer in the same durable session.
+   - Show the live tool-backed triage output (`run_full_repo_audit`, `stream_events=32`) + follow-up turn in the same durable session.
 4. **2:30–3:00 — Building Blocks Findings & Feedback**
    - Briefly show `BUILDING_BLOCKS_TESTED.md` and `WHAT_WE_LEARNED.md` (especially the `default_channel` minimal-config finding and SQLite `ResourceWarning` finding).
 

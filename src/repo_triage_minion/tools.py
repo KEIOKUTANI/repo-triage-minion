@@ -161,7 +161,22 @@ def save_triage_markdown(output_path: str, markdown_body: str) -> str:
     return f"saved report ({len(markdown_body)} chars) to {target}"
 
 
+@tool(min_scope="READ_ONLY", idempotent=True, tags=("qa", "repo", "release"))
+def run_full_repo_audit(repo_path: str) -> str:
+    """Run structure, code-marker/secret, and release-hygiene checks in one compact JSON payload."""
+
+    return json.dumps(
+        {
+            "structure": json.loads(scan_repository_structure(repo_path)),
+            "markers": json.loads(find_code_markers(repo_path)),
+            "hygiene": json.loads(check_release_hygiene(repo_path)),
+        },
+        indent=2,
+    )
+
+
 READ_ONLY_TOOLS = [
+    run_full_repo_audit,
     scan_repository_structure,
     find_code_markers,
     check_release_hygiene,
