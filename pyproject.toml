@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repo-triage-minion"
+version = "0.1.0"
+description = "Local-first QA, issue triage, and release-readiness agent built on the OpenMinion 0.1 Python SDK for Cortensor Hackathon #5."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+  "openminion>=0.1.23",
+  "pydantic>=2",
+  "rich>=13.0",
+]
+
+[project.scripts]
+repo-triage-minion = "repo_triage_minion.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
