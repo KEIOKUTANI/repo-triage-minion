@@ -13,7 +13,7 @@ A reproducible local-first repository QA, secret/marker scanner, and release-rea
 ## Links
 - **Public Source Repository**: https://github.com/KEIOKUTANI/repo-triage-minion
 - **Forked OpenMinion Repository**: https://github.com/KEIOKUTANI/openminion
-- **Demo Video (1–5 min)**: `[INSERT_DEMO_VIDEO_URL]`
+- **Demo Video (1–5 min)**: https://github.com/KEIOKUTANI/repo-triage-minion/releases/download/v0.1.0/repo_triage_minion_demo.mp4
 
 ---
 

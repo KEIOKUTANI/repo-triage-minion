@@ -97,6 +97,7 @@ Add `--followup "Which single issue should we fix first before release?"` to tes
 
 ## Submission Documents
 
+- **Demo Video (90s, 720p MP4)**: https://github.com/KEIOKUTANI/repo-triage-minion/releases/download/v0.1.0/repo_triage_minion_demo.mp4
 - **[BUILDING_BLOCKS_TESTED.md](./BUILDING_BLOCKS_TESTED.md)** — Exact OpenMinion 0.1.23 building blocks exercised, what worked, and concrete issues encountered.
 - **[WHAT_WE_LEARNED.md](./WHAT_WE_LEARNED.md)** — Actionable product & DX feedback for OpenMinion and Cortensor maintainers.
 - **[DEMO_SCRIPT.md](./DEMO_SCRIPT.md)** — 1–5 minute demo walkthrough script.
